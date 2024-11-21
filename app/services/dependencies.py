@@ -11,19 +11,23 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 # Dependencia para obtener el usuario actual
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    print("Token recibido:", token)  # Depuración: verifica el token recibido
+
     try:
         # Decodificar el token JWT
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id: int = payload.get("sub")
-        if user_id is None:
+        print("Payload decodificado:", payload)  # Depuración: verifica el payload decodificado
+
+        email: str = payload.get("sub")
+        if email is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid token",
                 headers={"WWW-Authenticate": "Bearer"},
             )
         
-        # Buscar el usuario en la base de datos
-        user = db.query(User).filter(User.id == user_id).first()
+        # Buscar el usuario en la base de datos por correo electrónico
+        user = db.query(User).filter(User.email == email).first()
         if user is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -31,7 +35,8 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
                 headers={"WWW-Authenticate": "Bearer"},
             )
         return user
-    except JWTError:
+    except JWTError as e:
+        print("Payload del Token", e)  # Depuración del error
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",

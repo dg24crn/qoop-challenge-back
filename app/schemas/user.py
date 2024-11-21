@@ -13,6 +13,7 @@ class UserResponse(BaseModel):
     first_name: str
     last_name: str
     email: str
+    is_subscribed: bool  # Campo para indicar si el usuario está suscrito
 
     class Config:
         orm_mode = True
