@@ -1,4 +1,6 @@
 from pydantic import BaseModel
+from datetime import datetime
+
 
 # Esquema para crear un usuario (input)
 class UserCreate(BaseModel):
@@ -7,6 +9,7 @@ class UserCreate(BaseModel):
     email: str
     password: str
 
+
 # Esquema para responder datos de usuario (output)
 class UserResponse(BaseModel):
     id: int
@@ -14,14 +17,19 @@ class UserResponse(BaseModel):
     last_name: str
     email: str
     is_subscribed: bool  # Campo para indicar si el usuario está suscrito
+    subscription_expiration: datetime | None = (
+        None  # Campo opcional para la fecha de expiración
+    )
 
     class Config:
         orm_mode = True
+
 
 # Esquema para manejar el login (input)
 class UserLogin(BaseModel):
     email: str
     password: str
+
 
 # Esquema para responder con el token (output)
 class TokenResponse(BaseModel):
