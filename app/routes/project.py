@@ -5,6 +5,7 @@ from app.models.project import Project, ProjectMember
 from app.models.user import User  # Importar User
 from app.services.db import get_db
 from app.models.task import Task
+from app.services.dependencies import get_current_user
 
 router = APIRouter(prefix="/projects", tags=["projects"])
 
@@ -20,8 +21,11 @@ def create_project(project: ProjectCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/", response_model=list[ProjectResponse])
-def list_projects(db: Session = Depends(get_db)):
-    projects = db.query(Project).all()
+def list_projects(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """
+    List all projects owned by the authenticated user.
+    """
+    projects = db.query(Project).filter(Project.owner_id == current_user.id).all()
     return projects
 
 
