@@ -21,7 +21,9 @@ def create_project(project: ProjectCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/", response_model=list[ProjectResponse])
-def list_projects(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+def list_projects(
+    current_user: User = Depends(get_current_user), db: Session = Depends(get_db)
+):
     """
     List all projects owned by the authenticated user.
     """
@@ -151,3 +153,19 @@ def get_project_progress(project_id: int, db: Session = Depends(get_db)):
 
     # Retornar el progreso
     return {"project_id": project_id, "progress": f"{progress:.2f}%"}
+
+
+@router.get("/team/{team_id}", response_model=list[ProjectResponse])
+def get_team_projects(team_id: int, db: Session = Depends(get_db)):
+    """
+    Obtener todos los proyectos asociados al equipo.
+    """
+    # Verificar si el equipo existe
+    team = db.query(Team).filter(Team.id == team_id).first()
+    if not team:
+        raise HTTPException(status_code=404, detail="Team not found.")
+
+    # Obtener proyectos del propietario del equipo
+    owner_projects = db.query(Project).filter(Project.owner_id == team.owner_id).all()
+
+    return owner_projects

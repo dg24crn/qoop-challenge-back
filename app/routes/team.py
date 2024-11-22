@@ -19,11 +19,19 @@ router = APIRouter(prefix="/teams", tags=["teams"])
 
 @router.post("/", response_model=TeamResponse)
 def create_team(team: TeamCreate, db: Session = Depends(get_db)):
+    # Crear el equipo
     new_team = Team(name=team.name, owner_id=team.owner_id)
     db.add(new_team)
     db.commit()
     db.refresh(new_team)
+
+    # Agregar al creador como miembro del equipo
+    team_member = TeamMember(team_id=new_team.id, user_id=team.owner_id)
+    db.add(team_member)
+    db.commit()
+
     return new_team
+
 
 
 @router.post("/{team_id}/invite", response_model=InvitationResponse)
@@ -160,3 +168,56 @@ def remove_member_from_team(
     return {
         "message": f"User {user.first_name} removed from team {team.name} successfully"
     }
+
+@router.get("/by_user/{user_id}", response_model=dict)
+def get_team_by_user(user_id: int, db: Session = Depends(get_db)):
+    """
+    Obtener el equipo al que pertenece un usuario específico.
+    Devuelve el equipo, el creador del equipo y los miembros del equipo.
+    """
+    # Verificar si el usuario pertenece a algún equipo
+    team_member = db.query(TeamMember).filter(TeamMember.user_id == user_id).first()
+    if not team_member:
+        raise HTTPException(status_code=404, detail="User does not belong to any team.")
+
+    # Obtener el equipo
+    team = db.query(Team).filter(Team.id == team_member.team_id).first()
+    if not team:
+        raise HTTPException(status_code=404, detail="Team not found.")
+
+    # Obtener los miembros del equipo
+    members = (
+        db.query(TeamMember, User)
+        .join(User, TeamMember.user_id == User.id)
+        .filter(TeamMember.team_id == team.id)
+        .all()
+    )
+
+    # Obtener los datos del creador del equipo
+    owner = db.query(User).filter(User.id == team.owner_id).first()
+
+    # Formatear los datos para la respuesta
+    response = {
+        "team": {
+            "id": team.id,
+            "name": team.name,
+            "created_at": team.created_at,
+        },
+        "owner": {
+            "id": owner.id,
+            "first_name": owner.first_name,
+            "last_name": owner.last_name,
+            "email": owner.email,
+        },
+        "members": [
+            {
+                "id": member.TeamMember.id,
+                "first_name": member.User.first_name,
+                "last_name": member.User.last_name,
+                "email": member.User.email,
+            }
+            for member in members
+        ],
+    }
+
+    return response
