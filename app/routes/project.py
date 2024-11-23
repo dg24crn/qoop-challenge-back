@@ -6,6 +6,7 @@ from app.models.user import User  # Importar User
 from app.services.db import get_db
 from app.models.task import Task
 from app.services.dependencies import get_current_user
+from app.models.team import Team
 
 router = APIRouter(prefix="/projects", tags=["projects"])
 
