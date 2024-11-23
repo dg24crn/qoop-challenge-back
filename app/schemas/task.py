@@ -6,7 +6,7 @@ from typing import Optional
 class TaskCreate(BaseModel):
     name: str
     project_id: int
-    assigned_to_id: Optional[int] = None  # Puede no estar asignado a un usuario inicialmente
+    assigned_to_id: Optional[int] = None
 
 
 # Esquema para actualizar una tarea

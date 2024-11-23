@@ -16,9 +16,9 @@ class UserResponse(BaseModel):
     first_name: str
     last_name: str
     email: str
-    is_subscribed: bool  # Campo para indicar si el usuario está suscrito
+    is_subscribed: bool
     subscription_expiration: datetime | None = (
-        None  # Campo opcional para la fecha de expiración
+        None
     )
 
     class Config:

@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from sqlalchemy.orm import relationship
-from passlib.context import CryptContext  # Importar el contexto de hashing
+from passlib.context import CryptContext
 from app.services.db import Base
 from datetime import datetime
 
@@ -19,7 +19,7 @@ class User(Base):
 
     # Campos relacionados con suscripciones
     is_subscribed = Column(Boolean, default=False, nullable=False)
-    subscription_expiration = Column(DateTime, nullable=True)  # Puede estar vacío si no hay suscripción
+    subscription_expiration = Column(DateTime, nullable=True)
 
     # Relación con Project
     projects = relationship("Project", back_populates="owner")

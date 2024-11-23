@@ -25,7 +25,7 @@ class TeamMember(Base):
     id = Column(Integer, primary_key=True, index=True)
     team_id = Column(Integer, ForeignKey("teams.id", ondelete="CASCADE"))
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
-    is_active = Column(Boolean, default=True)  # Para verificar si está activo en el equipo
+    is_active = Column(Boolean, default=True)
 
     # Relación con el equipo
     team = relationship("Team", back_populates="members")
@@ -39,7 +39,7 @@ class Invitation(Base):
     id = Column(Integer, primary_key=True, index=True)
     team_id = Column(Integer, ForeignKey("teams.id", ondelete="CASCADE"))
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
-    status = Column(String, default="pending")  # pending, accepted, rejected
+    status = Column(String, default="pending")
     created_at = Column(DateTime, default=datetime.utcnow)
 
     # Relación con el equipo

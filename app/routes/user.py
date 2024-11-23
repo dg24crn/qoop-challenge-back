@@ -26,7 +26,7 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
         first_name=user.first_name,
         last_name=user.last_name,
         email=user.email,
-        password=User.hash_password(user.password),  # Hasheamos la contraseña
+        password=User.hash_password(user.password),
     )
     db.add(new_user)
     db.commit()
@@ -78,7 +78,7 @@ def subscribe_user_monthly(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
 
     user.is_subscribed = True
-    user.subscription_expiration = datetime.utcnow() + timedelta(days=30)  # 1 mes
+    user.subscription_expiration = datetime.utcnow() + timedelta(days=30)
     db.commit()
     return {"message": f"Monthly subscription activated for user {user_id}"}
 
@@ -91,7 +91,7 @@ def subscribe_user_annually(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
 
     user.is_subscribed = True
-    user.subscription_expiration = datetime.utcnow() + timedelta(days=365)  # 1 año
+    user.subscription_expiration = datetime.utcnow() + timedelta(days=365)
     db.commit()
     return {"message": f"Annual subscription activated for user {user_id}"}
 
@@ -104,7 +104,7 @@ def unsubscribe_user(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
 
     user.is_subscribed = False
-    user.subscription_expiration = None  # Limpiar la fecha de expiración
+    user.subscription_expiration = None
     db.commit()
     return {"message": f"Subscription cancelled for user {user_id}"}
 

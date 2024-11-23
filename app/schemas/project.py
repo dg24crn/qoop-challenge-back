@@ -5,11 +5,11 @@ class ProjectBase(BaseModel):
     name: str
 
 class ProjectCreate(ProjectBase):
-    owner_id: int  # ID del usuario propietario
+    owner_id: int
 
 class ProjectResponse(ProjectBase):
     id: int
     owner_id: int
 
     class Config:
-        orm_mode = True  # Esto permite que SQLAlchemy devuelva objetos compatibles con Pydantic
+        orm_mode = True

@@ -14,7 +14,7 @@ class TeamCreate(TeamBase):
 class TeamResponse(TeamBase):
     id: int
     owner_id: int
-    created_at: datetime  # Cambiado a datetime para ser compatible con Pydantic
+    created_at: datetime
 
     class Config:
         orm_mode = True
@@ -30,7 +30,7 @@ class InvitationResponse(BaseModel):
     team_id: int
     user_id: int
     status: str
-    created_at: datetime  # Cambiado a datetime para ser compatible con Pydantic
+    created_at: datetime
 
     class Config:
         orm_mode = True
@@ -50,7 +50,6 @@ class AddMemberRequest(BaseModel):
     user_id: int
 
 
-# Nuevo esquema para la respuesta al eliminar miembros
 class RemoveMemberResponse(BaseModel):
     message: str
 
