@@ -21,14 +21,14 @@ app = FastAPI()
 # Configurar CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Permitir acceso desde cualquier origen para producción
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Crear tablas en la base de datos si no existen
-Base.metadata.drop_all(bind=engine)
+# Crear tablas en la base de datos
+#! Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)
 
 @app.get("/")
