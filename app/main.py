@@ -28,6 +28,7 @@ app.add_middleware(
 )
 
 # Crear tablas en la base de datos si no existen
+Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)
 
 @app.get("/")
