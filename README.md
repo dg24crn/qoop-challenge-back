@@ -1,4 +1,3 @@
-# Manage
+# Managé
 
-## Read the docs at:
-https://qoop-challenge-back.onrender.com/docs
+## Read the docs at: https://qoop-challenge-back.onrender.com/docs
